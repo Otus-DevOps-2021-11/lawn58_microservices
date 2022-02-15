@@ -1,6 +1,8 @@
 # lawn58_microservices
 lawn58 microservices repository
 
+###ДЗ Docker контейнеры###
+
 Создан образ из Dockerfile  
 Cоздан контейнер из образа  
 Образ запушен в  DockerHub  
@@ -8,4 +10,10 @@ Cоздан контейнер из образа
 
 docker run cadb35fb6709/otus_reddit:latest  
 
+###ДЗ Docker образы. Микросервисы###
 
+основы написания Dockerfile;  
+основные команды используемые при написание Dockerfile;  
+базовые образы;  
+микросервисы  
+  
