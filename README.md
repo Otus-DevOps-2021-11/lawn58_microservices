@@ -16,4 +16,9 @@ docker run cadb35fb6709/otus_reddit:latest
 основные команды используемые при написание Dockerfile;  
 базовые образы;  
 микросервисы  
-  
+
+###ДЗ Сетевое взаимодействие Docker контейнеров. Docker Compose. Тестирование образов###  
+
+Узнали/научились  
+Docker compose  
+Docker networks  
