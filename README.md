@@ -19,6 +19,6 @@ docker run cadb35fb6709/otus_reddit:latest
 
 ###ДЗ Сетевое взаимодействие Docker контейнеров. Docker Compose. Тестирование образов###  
 
-Узнали/научились
-Docker compose
-Docker networks
+Узнали/научились  
+Docker compose  
+Docker networks  
