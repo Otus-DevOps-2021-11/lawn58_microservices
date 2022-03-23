@@ -22,3 +22,7 @@ docker run cadb35fb6709/otus_reddit:latest
 Узнали/научились  
 Docker compose  
 Docker networks  
+
+###ДЗ Логирование приложений###
+
+Научились в ELK и Zipking
