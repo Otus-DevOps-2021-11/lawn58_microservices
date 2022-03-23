@@ -1,34 +1,103 @@
 version: '3.3'
+
 services:
   post_db:
-    image: mongo:${DB_VERS}
+    image: mongo:${SERVICE_MONGO}
+#    volumes:
+#      - post_db:/data/db
+    networks:
+      #- reddit
+      - back_net
+
+  node-exporter:
+    image: prom/node-exporter:v0.15.2
+    user: root
     volumes:
-      - post_db:/data/db
-    networks:
-      - back_net
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
   ui:
-    build: ./ui
-    image: ${USERNAME}/ui:${UI_VERS}
+    build: ../src/ui
+    image: ${USER_NAME}/ui:${SERVICE_UI}
     ports:
-      - ${APP_PORT}:9292/tcp
+      - ${PORT_UI}:${PORT_UI}/${PROTOCOL}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     networks:
+      #- reddit
       - front_net
+    
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.ui
+
   post:
-    build: ./post-py
-    image: ${USERNAME}/post:${POST_VERS}
+    build: ../src/post-py
+    image: ${USER_NAME}/post:${SERVICE_POST}
     networks:
-      - back_net
+      #- reddit
       - front_net
-  comment:
-    build: ./comment
-    image: ${USERNAME}/comment:${COMM_VERS}
+      - back_net 
+
+    environment:
+      - POST_DATABASE_HOST=post_db
+      - POST_DATABASE=posts
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+    depends_on:
+      - post_db  
+    ports:
+      - "5000:5000"
+ 
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.post
+
+#----
+
+  comment:  
+    build: ../src/comment
+    image: ${USER_NAME}/comment:${SERVICE_COMMENT}
     networks:
-      - back_net
+      #- reddit
       - front_net
+      - back_net
+
+  prometheus:
+    image: ${USER_NAME}/prometheus
+    volumes:
+      #- ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+    ports:
+      - 9090:9090
+    networks:
+      #- reddit
+      - front_net
+      - back_net
 
 volumes:
   post_db:
 
+volumes:
+  prometheus_data:
+
 networks:
+  #reddit:
   front_net:
+    driver: bridge
   back_net:
+    driver: bridge
