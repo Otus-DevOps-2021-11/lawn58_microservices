@@ -3,10 +3,7 @@ version: '3.3'
 services:
   post_db:
     image: mongo:${SERVICE_MONGO}
-#    volumes:
-#      - post_db:/data/db
     networks:
-      #- reddit
       - back_net
 
   node-exporter:
@@ -29,7 +26,6 @@ services:
     environment:
       - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     networks:
-      #- reddit
       - front_net
     
     logging:
@@ -42,7 +38,6 @@ services:
     build: ../src/post-py
     image: ${USER_NAME}/post:${SERVICE_POST}
     networks:
-      #- reddit
       - front_net
       - back_net 
 
@@ -61,31 +56,27 @@ services:
         fluentd-address: localhost:24224
         tag: service.post
 
-#----
 
   comment:  
     build: ../src/comment
     image: ${USER_NAME}/comment:${SERVICE_COMMENT}
     networks:
-      #- reddit
       - front_net
       - back_net
 
   prometheus:
     image: ${USER_NAME}/prometheus
     volumes:
-      #- ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+      - '--storage.tsdb.retention=1d' 
     environment:
       - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     ports:
       - 9090:9090
     networks:
-      #- reddit
       - front_net
       - back_net
 
@@ -96,7 +87,6 @@ volumes:
   prometheus_data:
 
 networks:
-  #reddit:
   front_net:
     driver: bridge
   back_net:
