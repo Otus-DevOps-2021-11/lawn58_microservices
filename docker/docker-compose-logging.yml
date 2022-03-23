@@ -1,7 +1,16 @@
 version: '3'
 services:
+
+  zipkin:
+    image: openzipkin/zipkin:2.21.0
+    ports:
+      - "9411:9411"
+    networks:
+      - front_net
+      - back_net
+
   fluentd:
-    image: ${USERNAME}/fluentd
+    image: ${USER_NAME}/fluentd
     ports:
       - "24224:24224"
       - "24224:24224/udp"
@@ -22,3 +31,9 @@ services:
     image: kibana:7.4.0
     ports:
       - "5601:5601"
+
+networks:
+  front_net:
+    driver: bridge
+  back_net:
+    driver: bridge
