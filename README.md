@@ -79,3 +79,9 @@ kubectl delete  -f pod-myweb-ver1.yaml  - удаляем под
 ###Основные модели безопасности и контроллеры в Kubernetes###
 
 Научились поднимать kubernetes кластер в yandex cloud
+
+###Ingress-контроллеры и сервисы в Kubernetes###
+
+сетевое взаимодействие в Kubernetes;
+хранилища данных
+
